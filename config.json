@@ -1,0 +1,19 @@
+{
+    "description": "prohibit paths from being mounted",
+    "documentation": "https://github.com/dsheets/mountpoint-prohibit-paths",
+    "interface": {
+        "types": ["docker.mountpoint/1.0"],
+        "socket": "prohibit-paths.sock"
+    },
+    "entrypoint": ["/docker-mountpoint-prohibit-paths"],
+    "mounts": [
+        {
+            "name": "config",
+            "description": "The path to the prohibit paths configuration",
+            "type": "bind",
+            "destination": "/config",
+            "options": ["bind"],
+            "settable": ["source"]
+        }
+    ]
+}
