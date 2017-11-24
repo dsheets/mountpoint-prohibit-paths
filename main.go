@@ -71,7 +71,7 @@ func (p prohibitPathsPlugin) Attach(req mountpoint.AttachRequest) mountpoint.Att
 	for _, mount := range req.Mounts {
 		for _, path := range p.paths {
 			source := mount.Source
-			if s, ok := mount.Options["device"]; ok {
+			if s, ok := mount.Volume.Options["device"]; ok {
 				source = s
 			}
 
@@ -128,20 +128,22 @@ func volPattern(pattern mountpoint.StringPattern) mountpoint.Pattern {
 	typeVolume := mountpoint.TypeVolume
 	return mountpoint.Pattern{
 		Type: &typeVolume,
-		Driver: []mountpoint.StringPattern{
-			{Exactly: "local"},
-		},
-		Options: []mountpoint.StringMapPattern{{
-			Exists: []mountpoint.StringMapKeyValuePattern{
-				{
-					Key:   mountpoint.StringPattern{Exactly: "o"},
-					Value: mountpoint.StringPattern{Contains: "bind"},
-				},
-				{
-					Key:   mountpoint.StringPattern{Exactly: "device"},
-					Value: pattern,
-				},
+		Volume: mountpoint.VolumePattern{
+			Driver: []mountpoint.StringPattern{
+				{Exactly: "local"},
 			},
-		}},
+			Options: []mountpoint.StringMapPattern{{
+				Exists: []mountpoint.StringMapKeyValuePattern{
+					{
+						Key:   mountpoint.StringPattern{Exactly: "o"},
+						Value: mountpoint.StringPattern{Contains: "bind"},
+					},
+					{
+						Key:   mountpoint.StringPattern{Exactly: "device"},
+						Value: pattern,
+					},
+				},
+			}},
+		},
 	}
 }
